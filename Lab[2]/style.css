@@ -1,0 +1,12 @@
+h1{
+    color : blue;
+    text-align: center;
+    font-size : 80px;
+}
+
+li
+{
+    margin: 10px;
+    color: green;
+    font-size: 40px;
+}
