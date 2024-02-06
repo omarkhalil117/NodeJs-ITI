@@ -5,6 +5,8 @@ const {mainRoute, astronomyRoute , addStyle} = require('./helperFunctions');
 
 http.createServer((req, res) => {
 
+  console.log(req.url)
+  
   // add css file
   addStyle(res)
 

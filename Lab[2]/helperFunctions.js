@@ -38,7 +38,7 @@ const mainRoute = (response)=>{
 
       let todos = JSON.parse(content)
 
-      todos = todos.map(element => {
+      todos = todos.map(element=>{
          return `<li>Title : ${element.title}  Status : ${element.Status} </li>`
       });
       
