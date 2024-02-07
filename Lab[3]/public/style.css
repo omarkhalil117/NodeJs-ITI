@@ -1,0 +1,31 @@
+h1{
+    color:coral;
+    font-size: 80px;
+}
+
+div {
+    text-align: center;
+    background-color: cornflowerblue;
+    padding: 30px;
+}
+
+.action{
+    width: 400px;
+    height: 125px;
+    padding: 20px;
+    margin: 40px auto ;
+    text-align: center;
+    border: 4px solid black;
+    background-color: aliceblue;
+}
+p{
+    margin: 10px;
+    color: green;
+    font-size: 40px;
+}
+
+span{
+    color: black;
+    margin: 10px;
+    font-size: 40px;
+}

@@ -1,36 +1,18 @@
-const http = require("http");
-const fs = require("fs");
-const path = require('path');
-const {mainRoute, astronomyRoute , addStyle} = require('./helperFunctions');
+const express = require('express');
+const router = require('./routes/todosRoutes');
 
-http.createServer((req, res) => {
+const app = express();
+const pug = require('pug');
 
-  console.log(req.url)
-  
-  // add css file
-  addStyle(res)
+const PORT = process.env.PORT || 3000;
 
-  // handle main route
-  if (req.url === '/') 
-  {
-    return mainRoute(res)
-  }
+app.use(express.static('public'));
+app.set('view engine', 'pug');
 
-  // handle astronomy route
-  if (req.url === "/astronomy")
-  {
-    return astronomyRoute(res)
-  }
+app.use(express.json());
 
-  if(req.url === "/download")
-  {
-    res.write("download page")
-    return res.end() 
-  }
-  // error page
-  res.write("<h1> Error 404 page not found </h1>")
+app.use('/todos', router);
 
- 
-}).listen(3000, (req, res) => {
-  console.log("Listining on port 3000")
+app.listen(PORT, () => {
+  console.log('Server is running on port 3000');
 });

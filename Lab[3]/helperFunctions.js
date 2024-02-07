@@ -1,75 +1,119 @@
-const fs = require("fs");
+const fs = require('fs');
 const path = require('path');
 
-const addStyle = (response)=>{
+const readFile = (filename) => {
+  const oldContent = fs.readFileSync(path.join(__dirname, filename));
+  return JSON.parse(oldContent);
+};
 
-  // read CSS file
-  const readStyle = fs.createReadStream(path.join(__dirname,"style.css") , 'utf-8')
-  let styles = ``;
-  
-  // concat styles string on getting chunk of data
-  readStyle.on('data' , (data) => {
-      styles+= data;
-  })
+const writIntoFile = (filename, content) => {
+  fs.writeFileSync(path.join(__dirname, filename), JSON.stringify(content));
+};
 
-  // after reading file add the content to html page
-  readStyle.on('end',()=>{
-    response.write(`<style> 
-    ${styles}
-    </style>`)
-  })
-  
+const editList = (filename, id, newTitle) => {
+  // check if there is any missing parametar
+  if (!id || !newTitle) {
+    console.log('There is missing parametar ?');
+    return;
+  }
+
+  // read content
+  const parsed = readFile(filename);
+
+  // find index
+  const elementToEdit = parsed.find((el) => el.id == id);
+
+  if (!elementToEdit) {
+    console.log('id not found ?');
+    return;
+  }
+
+  // update title
+  elementToEdit.title = newTitle;
+
+  // override file content
+  writIntoFile(filename, parsed);
+
+  console.log('Edited Successfully');
+};
+
+function deleteFromList(filename, id, req, res) {
+  const parseID = Number(id);
+  // check if id is missing
+  if (!id || Number.isNaN(parseID)) {
+    console.log('There is no id to delete');
+    res.sendStatus('403');
+    return;
+  }
+  console.log(`id type = ${typeof id} `);
+  // read data
+  const parsed = readFile(filename);
+
+  // find the deleted object index
+  const newList = parsed.filter((el) => el.id != id);
+
+  // check if there is deleted item
+  if (parsed.length === newList.length) {
+    console.log('Id not found ?');
+  }
+
+  // write new Array
+  fs.writeFileSync(path.join(__dirname, filename), JSON.stringify(newList));
 }
 
-const mainRoute = (response)=>{
-  response.write("<h1>Main Page</h1>")
+function addIntoList(filename, title) {
+  // check if title is missing
+  if (!title) {
+    console.log('No content to add');
+    return;
+  }
 
-    let content = ``;
-    const readStream = fs.createReadStream(path.join(__dirname,"todoList.json"),'utf-8')
+  // read content
+  const parsed = readFile(filename);
 
-    // get data 
-    readStream.on('data' , data =>{
-      content+=data
-      console.log(typeof content)
-    })
+  // add content and write into file
+  parsed.push({ title, Status: false, id: parsed[parsed.length - 1].id + 1 });
 
-    // add html tags 
-    readStream.on("end" , ()=>{
+  // override file content
+  writIntoFile(filename, parsed);
 
-      let todos = JSON.parse(content)
-
-      todos = todos.map(element=>{
-         return `<li>Title : ${element.title}  Status : ${element.Status} </li>`
-      });
-      
-      response.write(todos.join(''))
-
-      return response.end();
-    })
+  console.log('Action Inserted');
 }
 
-const astronomyRoute = (response)=>{
-  response.write("<h1> astronomy </h1>")
+function editStatus(filename, id, newStatus) {
+  // check for missing parameters
+  if (!id || !newStatus) {
+    console.log('There is missing parametar ?');
+    return;
+  }
 
+  // read content
+  const parsed = readFile(filename);
 
-  fs.readFile(path.join(__dirname,"img.jpg"),(err,data)=>{
-    
-    if(!err)
-    {
-      // convert the image to base64 string
-      const imgBuffer = Buffer.from(data).toString('base64');
+  // find index
+  const elementToEdit = parsed.find((el) => el.id == id);
 
-      // add it to img tag
-      const imgTag = `<img src="data:image/jpeg;base64,${imgBuffer}">`;
-  
-      // send the html as a response
-      response.write(imgTag);
-      return response.end()
-    }
-    
-    response.write("<h1> Error fetching the image </h1>")
-  })
+  // check if id not found
+  if (!elementToEdit) {
+    console.log('id not found ?');
+    return;
+  }
 
+  if (['in-progress', 'todo', 'done'].includes(newStatus)) {
+    // update title
+    elementToEdit.Status = newStatus;
+
+    // override file content
+    writIntoFile(filename, parsed);
+
+    console.log('Edited Successfully');
+    return;
+  }
+
+  console.log('Status is not correct');
+  console.log('Status is either in-progress , todo , done');
 }
 
-module.exports = {mainRoute , astronomyRoute , addStyle}
+module.exports = {
+  readFile, writIntoFile, editList, deleteFromList, addIntoList, editStatus,
+};
