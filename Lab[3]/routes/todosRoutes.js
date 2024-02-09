@@ -1,5 +1,4 @@
 const express = require('express');
-const pug = require('pug');
 const TodosMiddleware = require('../middlewares/todosMiddleware');
 
 const router = express.Router();
@@ -7,11 +6,17 @@ const todosController = require('../controllers/todosController');
 
 /// /////////////////////////////////////////////////////////////////
 
+// get all list unless there is query parametars
+
 router.get('/', (req, res) => {
   if (!req.query.status) {
     const todos = todosController.getAll();
     res.status(200).render('todos', { list: todos });
     return;
+  }
+
+  if (!['in-progress', 'done'].includes(req.query.status)) {
+    res.status(400).json([{ message: 'bad requrest' }]);
   }
 
   let todos = todosController.getAll();
@@ -27,7 +32,9 @@ router.get('/', (req, res) => {
 
 /// /////////////////////////////////////////////////////////////////
 
-router.get('/:id', (req, res) => {
+// get todo by id
+
+router.get('/:id', TodosMiddleware.getMiddlware, (req, res) => {
   const { id } = req.params;
   const action = todosController.findById(id);
 
@@ -40,6 +47,7 @@ router.get('/:id', (req, res) => {
 
 /// /////////////////////////////////////////////////////////////////
 
+// add todo
 router.post('/', TodosMiddleware.postMiddleware, (req, res) => {
   const { title } = req.body;
 
@@ -50,6 +58,7 @@ router.post('/', TodosMiddleware.postMiddleware, (req, res) => {
 
 /// /////////////////////////////////////////////////////////////////
 
+// delete todo
 router.delete('/:id', TodosMiddleware.deleteMiddleware, (req, res) => {
   const id = Number(req.params.id);
 
@@ -64,6 +73,8 @@ router.delete('/:id', TodosMiddleware.deleteMiddleware, (req, res) => {
 });
 
 /// /////////////////////////////////////////////////////////////////
+
+// update title or status or both
 
 router.patch('/:id', TodosMiddleware.patchMiddlware, (req, res) => {
   const id = Number(req.params.id);

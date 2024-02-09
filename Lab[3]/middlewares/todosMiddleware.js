@@ -1,9 +1,43 @@
+// check if id is a number and if title is empty string
+// and if status is not in-progress or done
+
+// check if id is NaN
+
+const getMiddlware = (req, res, next) => {
+  const id = Number(req.params.id);
+
+  if (Number.isNaN(id)) {
+    res.status(400).json([{ message: 'bad request' }]);
+    return;
+  }
+  next();
+};
+
+// //////////////////////////////////////////////////////////
+
+// check if title is not empty string
+
+const postMiddleware = (req, res, next) => {
+  const { title } = req.body;
+
+  if (!title.trim()) {
+    res.status(400).json([{ message: 'bad request' }]);
+    return;
+  }
+
+  next();
+};
+
+// /////////////////////////////////////////////////////////
+
+// check if title or status if they are empty string and id is not NaN
+
 const patchMiddlware = (req, res, next) => {
   const id = Number(req.params.id);
   const { title } = req.body;
   const { status } = req.body;
 
-  if (!id || Number.isNaN(id)) {
+  if (Number.isNaN(id)) {
     res.status(400).json([{ message: 'bad request' }]);
     return;
   }
@@ -21,10 +55,14 @@ const patchMiddlware = (req, res, next) => {
   next();
 };
 
-const deleteMiddleware = (req, res) => {
+// /////////////////////////////////////////////////////////
+
+// check for id if it's not a number
+
+const deleteMiddleware = (req, res, next) => {
   const id = Number(req.params.id);
 
-  if (!id || Number.isNaN(id)) {
+  if (Number.isNaN(id)) {
     res.status(400).json([{ message: 'bad request' }]);
     return;
   }
@@ -32,14 +70,6 @@ const deleteMiddleware = (req, res) => {
   next();
 };
 
-const postMiddleware = (req, res) => {
-  const { title } = req.body;
-
-  if (!title.trim()) {
-    res.status(400).json([{ message: 'bad request' }]);
-    return;
-  }
-
-  next();
+module.exports = {
+  patchMiddlware, deleteMiddleware, postMiddleware, getMiddlware,
 };
-module.exports = { patchMiddlware, deleteMiddleware, postMiddleware };
