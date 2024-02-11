@@ -1,7 +1,10 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const router = require('./routes/todosRoutes');
 
 const app = express();
+
+mongoose.connect('mongodb://127.0.0.1:27017/TodoDB');
 
 const PORT = process.env.PORT || 3000;
 
