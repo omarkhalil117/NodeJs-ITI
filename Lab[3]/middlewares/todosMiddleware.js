@@ -39,7 +39,7 @@ const patchMiddlware = (req, res, next) => {
     return;
   }
 
-  if (!title.trim() && !status) {
+  if (!title.trim()) {
     res.status(400).json([{ message: 'bad request' }]);
     return;
   }

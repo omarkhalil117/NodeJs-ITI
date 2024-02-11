@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "start": "nodemon index.js",
     "lint": "eslint ./  --resolve-plugins-relative-to . --fix"
   },
   "description": "",
