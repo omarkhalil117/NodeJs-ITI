@@ -1,6 +1,4 @@
-const {
-  readFile, addIntoList, deleteFromList, editList,
-} = require('../helperFunctions');
+/* eslint-disable consistent-return */
 const TodosModel = require('../models/todoModel');
 
 const getAll = () => {
@@ -8,21 +6,26 @@ const getAll = () => {
   return list;
 };
 
+// ///////////////////////////////////////////
+
 const findById = (id) => {
-  let list = TodosModel.getAll();
+  let todo = TodosModel.getAll();
 
   if (Number.isNaN(Number(id))) {
     return;
   }
 
-  list = list.filter((el) => el.id == id);
+  // eslint-disable-next-line eqeqeq
+  todo = todo.filter((el) => el.id == id);
 
-  if (list.length === 0) {
+  if (todo.length === 0) {
     return;
   }
 
-  return list;
+  return todo;
 };
+
+// ///////////////////////////////////////////
 
 const addTodo = (title) => {
   const list = TodosModel.getAll();
@@ -31,6 +34,8 @@ const addTodo = (title) => {
 
   TodosModel.writIntoFile(list);
 };
+
+// ///////////////////////////////////////////
 
 const deleteTodo = (idNumber) => {
   // read data
@@ -50,12 +55,14 @@ const deleteTodo = (idNumber) => {
   return true;
 };
 
+// ///////////////////////////////////////////
+
 const updateTodo = (id, title, status) => {
   // read content
   const list = TodosModel.getAll();
 
-  // find index
-  const elementToEdit = list.find((el) => el.id == id);
+  // find Element to edit
+  const elementToEdit = list.find((el) => el.id === id);
 
   if (!elementToEdit) {
     return false;

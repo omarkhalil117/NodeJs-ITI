@@ -1,6 +1,3 @@
-// check if id is a number and if title is empty string
-// and if status is not in-progress or done
-
 // check if id is NaN
 
 const getMiddlware = (req, res, next) => {

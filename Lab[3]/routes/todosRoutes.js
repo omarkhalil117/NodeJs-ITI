@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
     return;
   }
 
-  if (!['in-progress', 'done'].includes(req.query.status)) {
+  if (!['in-progress', 'done', 'to-do'].includes(req.query.status)) {
     res.status(400).json([{ message: 'bad requrest' }]);
   }
 

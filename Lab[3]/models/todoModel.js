@@ -2,8 +2,8 @@ const fs = require('fs');
 const path = require('path');
 
 const getAll = () => {
-  const oldContent = fs.readFileSync(path.join(__dirname, '../todoList.json'));
-  return JSON.parse(oldContent);
+  const content = fs.readFileSync(path.join(__dirname, '../todoList.json'));
+  return JSON.parse(content);
 };
 
 const writIntoFile = (content) => {
