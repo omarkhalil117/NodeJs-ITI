@@ -2,7 +2,6 @@ const Todo = require('../models/Todo');
 
 // /////////////////////////////////////////////////////////////////
 
-
 async function getUserTodos(userId) {
   const todos = await Todo.find({ _id: userId });
   return todos;

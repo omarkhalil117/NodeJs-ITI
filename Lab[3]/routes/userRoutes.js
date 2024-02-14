@@ -20,7 +20,7 @@ router.post('/login', async (req, res) => {
     // eslint-disable-next-line no-underscore-dangle
     const userId = user._id;
     res.cookie('userId', userId);
-    const token = jsonWebToken.sign({ userId }, 'aabbccssdafwac', { expiresIn: '1d' });
+    const token = jsonWebToken.sign({ userId }, process.env.SECRET_KEY, { expiresIn: '1d' });
     return res.json(token);
   } catch (err) {
     res.status(401).json([{ message: 'User email or password incorrect' }]);
@@ -84,4 +84,5 @@ router.get('/:id/todos', authMiddlware, verifyUsers, async (req, res) => {
     res.status(404).json(err.message);
   }
 });
+
 module.exports = router;

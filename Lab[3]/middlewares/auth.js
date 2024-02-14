@@ -7,7 +7,7 @@ function authMiddlware(req, res, next) {
     if (!authorization) {
       return res.status(401).json({ message: 'unautharized' });
     }
-    const valid = jsonWebToken.verify(authorization, 'aabbccssdafwac');
+    const valid = jsonWebToken.verify(authorization, process.env.SECRET_KEY);
 
     if (!valid) {
       return res.status(401).json({ message: 'unautharized' });

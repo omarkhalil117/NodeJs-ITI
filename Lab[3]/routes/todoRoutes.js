@@ -6,7 +6,7 @@ const router = express.Router();
 const todosController = require('../controllers/todosController');
 
 const { authMiddlware } = require('../middlewares/auth');
-const { verifyUsers } = require('../middlewares/verifyUsers');
+const { verifyTodo } = require('../middlewares/verifyTodo');
 // /////////////////////////////////////////////////////////////////
 
 router.get('/', authMiddlware, async (req, res) => {
@@ -29,6 +29,12 @@ router.get('/', authMiddlware, async (req, res) => {
 
 router.post('/', authMiddlware, async (req, res) => {
   try {
+    const { authorization } = req.headers;
+    const { userId } = jsonWebToken.decode(authorization);
+
+    // add user id to the body
+    req.body.userId = userId;
+
     const newTodo = await todosController.addTodo(req.body);
     res.json(newTodo);
   } catch (err) {
@@ -38,8 +44,9 @@ router.post('/', authMiddlware, async (req, res) => {
 
 // /////////////////////////////////////////////////////////////////
 
-router.delete('/:id', authMiddlware, verifyUsers, async (req, res) => {
+router.delete('/:id', authMiddlware, verifyTodo, async (req, res) => {
   try {
+    console.log(req.params.id);
     const deletedTodo = await todosController.deleteTodo(req.params.id);
     res.json(deletedTodo);
   } catch (err) {
@@ -49,7 +56,7 @@ router.delete('/:id', authMiddlware, verifyUsers, async (req, res) => {
 
 // /////////////////////////////////////////////////////////////////
 
-router.patch('/:id', authMiddlware, verifyUsers, async (req, res) => {
+router.patch('/:id', authMiddlware, verifyTodo, async (req, res) => {
   try {
     const updatedTodo = await todosController
       .updateTodo(req.params.id, req.body);
